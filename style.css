@@ -1,0 +1,632 @@
+/* =========================================================
+    1. CORE & GAMIFIED CURSOR
+    ========================================================= */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    cursor: none !important;
+}
+
+body {
+    width: 100vw;
+    height: 100vh;
+    background-color: ______;               /* HINT : Light background Color*/   
+    overflow: hidden;
+    font-family: 'Caveat', cursive;
+    color: _______;                         /* HINT : Dark Font color */
+    user-select: none;
+}
+
+/* Paper Texture */
+body::before {
+    content: "";
+    position: _______;                    /* HINT : Stick to one position throughout */
+    top: ______;                          /* HINT : Fix Position to the Top of the document */
+    left: ______;                         /* HINT : Fix Position to the Left Corner */
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 999;
+    opacity: 0.35;
+    mix-blend-mode: multiply;
+    background: url('data:image/svg+xml;utf8,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)"/%3E%3C/svg%3E');
+}
+
+/* Custom Game Cursor */
+#game-cursor {
+    position: _______;                    /* HINT : Stick to one position throughout */
+    top: ______;                          /* HINT : Fix Position to -10px distance from Top */
+    left: -10px;                          /* HINT : Fix Position to -10px distance from Left */
+    width: 20px;
+    height: 20px;
+    border: _______;                       /*HINT : Solid border with 2px width and #2a2a2a color*/
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 10000;
+    transform: translate(0, 0);
+    transition: width 0.2s, height 0.2s, background-color 0.2s;
+    display: flex;
+    justify-content: _________;            /* HINT : Centarlised content for the given section*/
+    align-items: ______;                  /* HINT : Centarlised items for the given section*/
+}
+
+#game-cursor::after {
+    content: '';
+    width: 4px;
+    height: 4px;
+    background: #2a2a2a;
+    border-radius: ________;               /* HINT : Half-way curved borders but not 100%*/
+}
+
+#game-cursor.hovering {
+    width: 30px;
+    height: 30px;
+    background-color: rgba(42, 42, 42, 0.1);
+    border-style: ______;                   /* HINT : "------" this type of Border*/
+    animation: spin 4s linear infinite;
+}
+
+@keyframes spin {
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Click Ripple Effect */
+.click-ripple {
+    position: _______;                    /* HINT : Stick to one position throughout */
+    border: 2px solid #2a2a2a;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    animation: rippleAnim 0.6s ease-out forwards;
+}
+
+@keyframes rippleAnim {
+    0% {
+        width: 0;
+        height: 0;
+        opacity: 1;
+    }
+
+    100% {
+        width: 100px;
+        height: 100px;
+        opacity: 0;
+    }
+}
+
+/* Background Canvases */
+#ink-particles,
+#confetti-canvas {
+    position: _______;                    /* HINT : Stick to one position throughout */
+    top: ______;                          /* HINT : Fix Position to the Top of the document */
+    left: ______;                         /* HINT : Fix Position to the Left Corner */
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 1;
+}
+
+#ink-particles {
+    opacity: 0.6;
+}
+
+#confetti-canvas {
+    z-index: 400;
+}
+
+/* =========================================================
+    2. HUD & GAME UI
+    ========================================================= */
+#game-hud {
+    position: _______;                    /* HINT : Stick to one position throughout */
+    top: ______;                          /* HINT : Fix Position to 20px distance from Top */
+    left: ______;                         /* HINT : Fix Position to 20px distance from Left */
+    right: ______;                        /* HINT : Fix Position to 20px distance from Right */
+    display: flex;
+    justify-content: space-between;
+    font-family: 'Courier Prime', monospace;
+    font-weight: bold;
+    font-size: 1.2rem;
+    color: #2a2a2a;
+    z-index: 110;
+    opacity: 0;
+    transition: opacity 1s;
+    pointer-events: none;
+}
+
+.hud-box {
+    border:_____;                     /*HINT : Dashed border with 2px width and #2a2a2a color */
+    padding: 10px 20px;
+    background: rgba(244, 244, 242, 0.8);
+    border-radius: 2px 15px 3px 15px / 15px 5px 15px 3px;
+}
+
+.blink {
+    animation: blinking 1.5s infinite;
+}
+
+@keyframes blinking {
+    50% {
+        opacity: 0.3;
+    }
+}
+
+@keyframes shake {
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    20%,
+    60% {
+        transform: translateX(-10px);
+    }
+
+    40%,
+    80% {
+        transform: translateX(10px);
+    }
+}
+
+.shake-anim {
+    animation: shake 0.4s ease-out;
+}
+
+#flash {
+    position: _______;                    /* HINT : Stick to one position throughout */
+    top: ______;                          /* HINT : Fix Position to extreme Top */
+    left: ______;                         /* HINT : Fix Position to extreme Left */
+    width: 100vw;
+    height: 100vh;
+    background:_____;                         /* HINT : Completely white background */
+    z-index: 500;
+    pointer-events: none;
+    opacity: 0;
+}
+
+.flash-anim {
+    animation: flashbang 0.5s ease-out;
+}
+
+@keyframes flashbang {
+    0% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+/* =========================================================
+    3. MAIN MENU
+    ========================================================= */
+#front-gate {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: #f4f4f2;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 1s ease;
+}
+
+#front-gate h1 {
+    font-size: 6rem;
+    margin-bottom: 10px;
+    color: #2a2a2a;
+    text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.1);
+}
+
+#front-gate p {
+    font-family: 'Courier Prime', monospace;
+    font-size: 1.3rem;
+    margin-bottom: 40px;
+    text-align: center;
+    line-height: 1.6;
+}
+
+.btn-start {
+    font-family: 'Courier Prime', monospace;
+    font-size: 2rem;
+    font-weight: bold;
+    padding: 15px 40px;
+    background: transparent;
+    color: #2a2a2a;
+    border: 4px solid #2a2a2a;
+    border-radius: 2px 255px 3px 25px / 255px 5px 225px 3px;
+    transition: all 0.2s;
+}
+
+.btn-start:hover {
+    background: #2a2a2a;
+    color: #f4f4f2;
+    transform: scale(1.1) rotate(-2deg);
+}
+
+/* =========================================================
+    4. 3D SYMMETRICAL ROOM
+    ========================================================= */
+#scene {
+    width: 100vw;
+    height: 100vh;
+    perspective: 900px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 5;
+}
+
+#room {
+    width: 0;
+    height: 0;
+    position: absolute;
+    transform-style: preserve-3d;
+    transform: rotateX(0deg) rotateY(0deg) translateZ(200px);
+    transition: transform 0.1s ease-out;
+}
+
+.wall {
+    position: absolute;
+    background-color: #fdfdfd;
+    box-shadow: inset 0 0 150px rgba(0, 0, 0, 0.06);
+    transform-style: preserve-3d;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: 4px solid #2a2a2a;
+    border-radius: 5px 155px 5px 15px / 155px 5px 125px 5px;
+}
+
+.wall-back {
+    width: 800px;
+    height: 600px;
+    transform: translate(-50%, -50%) translateZ(-400px);
+}
+
+.wall-left {
+    width: 800px;
+    height: 600px;
+    transform: translate(-50%, -50%) rotateY(90deg) translateZ(-400px);
+}
+
+.wall-right {
+    width: 800px;
+    height: 600px;
+    transform: translate(-50%, -50%) rotateY(-90deg) translateZ(-400px);
+}
+
+.floor {
+    width: 800px;
+    height: 800px;
+    border: none;
+    background: repeating-linear-gradient(90deg, #f0f0f0, #f0f0f0 40px, #e6e6e6 40px, #e6e6e6 42px);
+    transform: translate(-50%, -50%) rotateX(90deg) translateZ(-300px);
+    border-radius: 0;
+}
+
+.wall-title {
+    font-size: 4rem;
+    letter-spacing: 2px;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.1);
+}
+
+/* =========================================================
+    5. DOORS & PROGRESSION
+    ========================================================= */
+.door-frame {
+    width: 180px;
+    height: 340px;
+    border: 4px solid #2a2a2a;
+    border-bottom: none;
+    border-radius: 4px 4px 0 0;
+    position: relative;
+    transform-style: preserve-3d;
+    background: #222;
+}
+
+.room-door {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: #fff;
+    transform-origin: left;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), background-color 0.3s ease, filter 0.3s;
+}
+
+.room-door::after {
+    content: '';
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    width: 14px;
+    height: 14px;
+    background: #2a2a2a;
+    border-radius: 50%;
+}
+
+.room-door h2 {
+    font-size: 2.2rem;
+    pointer-events: none;
+}
+
+.status-icon {
+    font-family: 'Courier Prime', monospace;
+    font-size: 1rem;
+    margin-top: 10px;
+    padding: 4px 8px;
+    border: 2px dashed #2a2a2a;
+    pointer-events: none;
+    font-weight: bold;
+}
+
+/* Locking System */
+.door-frame.locked .room-door {
+    background: repeating-linear-gradient(45deg, #ccc, #ccc 10px, #bbb 10px, #bbb 20px);
+    filter: grayscale(1);
+}
+
+.door-frame.locked .status-icon {
+    color: #c0392b;
+    border-color: #c0392b;
+}
+
+.door-frame.unlocked .room-door {
+    background: #fff;
+}
+
+.door-frame.unlocked .status-icon {
+    color: #f39c12;
+    border-color: #f39c12;
+}
+
+.door-frame.solved .status-icon {
+    color: #27ae60;
+    border-color: #27ae60;
+}
+
+.door-frame.unlocked.interactable:hover .room-door {
+    background-color: #e3f2fd;
+}
+
+.room-door.open {
+    transform: rotateY(-105deg);
+}
+
+/* =========================================================
+    6. PUZZLE & INVENTORY MODALS
+    ========================================================= */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(42, 42, 42, 0.9);
+    z-index: 200;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+.modal-overlay.active {
+    opacity: 1;
+}
+
+.modal-content,
+.puzzle-content {
+    background: #f4f4f2;
+    max-width: 750px;
+    width: 90%;
+    max-height: 85vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 50px 40px;
+    position: relative;
+    font-family: 'Courier Prime', monospace;
+    transform: translateY(50px) scale(0.9);
+    transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+    display: none;
+    border: 4px solid #2a2a2a;
+    border-radius: 2px 255px 3px 25px / 255px 5px 225px 3px;
+}
+
+.modal-overlay.active .modal-content,
+.modal-overlay.active .puzzle-content {
+    transform: translateY(0) scale(1);
+}
+
+.modal-content::-webkit-scrollbar {
+    width: 12px;
+}
+
+.modal-content::-webkit-scrollbar-track {
+    background: transparent;
+    border-left: 2px dashed #ccc;
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+    background: #2a2a2a;
+    border: 2px solid #f4f4f2;
+}
+
+.modal-content h2 {
+    font-family: 'Caveat', cursive;
+    font-size: 4rem;
+    border-bottom: 4px solid #2a2a2a;
+    margin-bottom: 25px;
+}
+
+.modal-content h3 {
+    font-size: 1.5rem;
+    margin: 25px 0 10px 0;
+    color: #111;
+    text-decoration: underline;
+}
+
+.modal-content p,
+.modal-content li {
+    line-height: 1.8;
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+    color: #333;
+}
+
+.modal-content ul {
+    padding-left: 20px;
+    margin-bottom: 15px;
+}
+
+/* Puzzle Terminal UI */
+.puzzle-content {
+    max-width: 500px;
+    text-align: center;
+    background: #111;
+    color: #3498db;
+    border: 4px solid #222;
+    border-radius: 8px;
+}
+
+.puzzle-content h2 {
+    font-family: 'Courier Prime', monospace;
+    font-size: 1.5rem;
+    border-bottom: 1px dashed #3498db;
+    padding-bottom: 10px;
+    color: #3498db;
+    margin-bottom: 20px;
+}
+
+.puzzle-content p {
+    color: #eee;
+    font-size: 1.2rem;
+    margin-bottom: 30px;
+    line-height: 1.6;
+}
+
+/* Highlight code blocks inside the puzzle question */
+.puzzle-content code {
+    background: #222;
+    padding: 4px 8px;
+    border-radius: 4px;
+    color: #f1c40f;
+    border: 1px solid #444;
+}
+
+.puzzle-input {
+    background: transparent;
+    border: 2px solid #3498db;
+    color: #3498db;
+    font-family: 'Courier Prime', monospace;
+    font-size: 1.5rem;
+    padding: 10px;
+    width: 80%;
+    text-align: center;
+    outline: none;
+    text-transform: lowercase;
+    margin-bottom: 20px;
+}
+
+.puzzle-input:focus {
+    background: rgba(52, 152, 219, 0.1);
+}
+
+.puzzle-input.error {
+    border-color: #e74c3c;
+    color: #e74c3c;
+}
+
+.btn-submit {
+    background: #3498db;
+    color: #111;
+    border: none;
+    font-family: 'Courier Prime', monospace;
+    font-size: 1.2rem;
+    font-weight: bold;
+    padding: 10px 30px;
+    margin-top: 10px;
+    transition: 0.2s;
+}
+
+.btn-submit:hover {
+    background: #2980b9;
+}
+
+.close-btn,
+.cancel-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-family: 'Courier Prime', monospace;
+    font-weight: bold;
+    font-size: 1.2rem;
+    background: #fff;
+    border: 2px solid #2a2a2a;
+    color: #111;
+    padding: 5px 15px;
+    transition: all 0.2s ease;
+    z-index: 10;
+}
+
+.close-btn:hover,
+.cancel-btn:hover {
+    background: #2a2a2a;
+    color: #fff;
+}
+
+/* =========================================================
+    7. CELEBRATION POPUP
+    ========================================================= */
+#party-popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.5);
+    background: #fff;
+    border: 6px solid #2a2a2a;
+    border-radius: 10px;
+    padding: 50px;
+    text-align: center;
+    z-index: 500;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 20px 20px 0px rgba(0, 0, 0, 0.1);
+}
+
+#party-popup.show {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+    pointer-events: auto;
+}
+
+#party-popup h2 {
+    font-family: 'Caveat', cursive;
+    font-size: 5rem;
+    color: #e74c3c;
+    margin-bottom: 10px;
+    line-height: 1;
+}
+
+#party-popup p {
+    font-family: 'Courier Prime', monospace;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
