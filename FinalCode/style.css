@@ -1,0 +1,709 @@
+/* =========================================================
+    1. CORE, VARIABLES & RESPONSIVE RESETS
+    ========================================================= */
+:root {
+    /* Desktop Default 3D Dimensions */
+    --room-size: 800px;
+    --cam-z: 200px;
+    --door-w: 180px;
+    --door-h: 340px;
+}
+
+@media (max-width: 768px) {
+    :root {
+        /* Mobile 3D Dimensions (Rebuilds the box smaller) */
+        --room-size: 380px;
+        --cam-z: 80px;
+        --door-w: 120px;
+        --door-h: 220px;
+    }
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    width: 100vw;
+    height: 100vh;
+    background-color: #f4f4f2;
+    overflow: hidden;
+    font-family: 'Caveat', cursive;
+    color: #222;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    overscroll-behavior: none;
+    /* Stops pull-to-refresh on mobile swipe */
+}
+
+/* Paper Texture */
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 999;
+    opacity: 0.35;
+    mix-blend-mode: multiply;
+    background: url('data:image/svg+xml;utf8,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)"/%3E%3C/svg%3E');
+}
+
+/* Hide native cursor on non-touch devices */
+@media (hover: hover) and (pointer: fine) {
+    * {
+        cursor: none !important;
+    }
+}
+
+/* Custom Game Cursor (Desktop Only) */
+#game-cursor {
+    position: fixed;
+    top: -10px;
+    left: -10px;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #2a2a2a;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 10000;
+    transform: translate(0, 0);
+    transition: width 0.2s, height 0.2s, background-color 0.2s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+@media (hover: none) {
+    #game-cursor {
+        display: none !important;
+    }
+}
+
+#game-cursor::after {
+    content: '';
+    width: 4px;
+    height: 4px;
+    background: #2a2a2a;
+    border-radius: 50%;
+}
+
+#game-cursor.hovering {
+    width: 30px;
+    height: 30px;
+    background-color: rgba(42, 42, 42, 0.1);
+    border-style: dashed;
+    animation: spin 4s linear infinite;
+}
+
+@keyframes spin {
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Click Ripple Effect */
+.click-ripple {
+    position: fixed;
+    border: 2px solid #2a2a2a;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    animation: rippleAnim 0.6s ease-out forwards;
+}
+
+@keyframes rippleAnim {
+    0% {
+        width: 0;
+        height: 0;
+        opacity: 1;
+    }
+
+    100% {
+        width: 80px;
+        height: 80px;
+        opacity: 0;
+    }
+}
+
+#ink-particles,
+#confetti-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 1;
+}
+
+#ink-particles {
+    opacity: 0.6;
+}
+
+#confetti-canvas {
+    z-index: 400;
+}
+
+/* =========================================================
+    2. HUD & GAME UI
+    ========================================================= */
+#game-hud {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    right: 20px;
+    display: flex;
+    justify-content: space-between;
+    font-family: 'Courier Prime', monospace;
+    font-weight: bold;
+    font-size: clamp(0.8rem, 2vw, 1.2rem);
+    color: #2a2a2a;
+    z-index: 110;
+    opacity: 0;
+    transition: opacity 1s;
+    pointer-events: none;
+    gap: 10px;
+}
+
+@media (max-width: 768px) {
+    #game-hud {
+        flex-direction: column;
+        align-items: center;
+        top: 10px;
+    }
+}
+
+.hud-box {
+    border: 2px dashed #2a2a2a;
+    padding: 10px 20px;
+    background: rgba(244, 244, 242, 0.8);
+    border-radius: 2px 15px 3px 15px / 15px 5px 15px 3px;
+    text-align: center;
+    width: 100%;
+    max-width: 300px;
+}
+
+.blink {
+    animation: blinking 1.5s infinite;
+}
+
+@keyframes blinking {
+    50% {
+        opacity: 0.3;
+    }
+}
+
+@keyframes shake {
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    20%,
+    60% {
+        transform: translateX(-10px);
+    }
+
+    40%,
+    80% {
+        transform: translateX(10px);
+    }
+}
+
+.shake-anim {
+    animation: shake 0.4s ease-out;
+}
+
+#flash {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: #fff;
+    z-index: 500;
+    pointer-events: none;
+    opacity: 0;
+}
+
+.flash-anim {
+    animation: flashbang 0.5s ease-out;
+}
+
+@keyframes flashbang {
+    0% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+/* =========================================================
+    3. MAIN MENU
+    ========================================================= */
+#front-gate {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: #f4f4f2;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 1s ease;
+    padding: 20px;
+    text-align: center;
+}
+
+#front-gate h1 {
+    font-size: clamp(3.5rem, 10vw, 6rem);
+    margin-bottom: 10px;
+    color: #2a2a2a;
+    text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.1);
+    line-height: 1;
+}
+
+#front-gate p {
+    font-family: 'Courier Prime', monospace;
+    font-size: clamp(1rem, 3vw, 1.3rem);
+    margin-bottom: 40px;
+    line-height: 1.6;
+    max-width: 600px;
+}
+
+.btn-start {
+    font-family: 'Courier Prime', monospace;
+    font-size: clamp(1.2rem, 4vw, 2rem);
+    font-weight: bold;
+    padding: 15px 40px;
+    background: transparent;
+    color: #2a2a2a;
+    border: 4px solid #2a2a2a;
+    border-radius: 2px 255px 3px 25px / 255px 5px 225px 3px;
+    transition: all 0.2s;
+    cursor: pointer;
+}
+
+@media (hover: hover) {
+    .btn-start:hover {
+        background: #2a2a2a;
+        color: #f4f4f2;
+        transform: scale(1.1) rotate(-2deg);
+    }
+}
+
+.btn-start:active {
+    transform: scale(0.95);
+}
+
+/* =========================================================
+    4. DYNAMIC 3D SCENE
+    ========================================================= */
+#scene {
+    width: 100vw;
+    height: 100vh;
+    perspective: 900px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 5;
+    touch-action: none;
+    /* Ensures swiping moves the camera, not the browser page */
+}
+
+#room {
+    width: 0;
+    height: 0;
+    position: absolute;
+    transform-style: preserve-3d;
+    transform: rotateX(0deg) rotateY(0deg) translateZ(var(--cam-z));
+    transition: transform 0.1s ease-out;
+    /* Smooth follow */
+}
+
+.wall {
+    position: absolute;
+    background-color: #fdfdfd;
+    box-shadow: inset 0 0 150px rgba(0, 0, 0, 0.06);
+    transform-style: preserve-3d;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: 4px solid #2a2a2a;
+    border-radius: 5px 155px 5px 15px / 155px 5px 125px 5px;
+    width: var(--room-size);
+    height: var(--room-size);
+}
+
+/* Math computes perfectly based on variables */
+.wall-back {
+    transform: translate(-50%, -50%) translateZ(calc(var(--room-size) / -2));
+}
+
+.wall-left {
+    transform: translate(-50%, -50%) rotateY(90deg) translateZ(calc(var(--room-size) / -2));
+}
+
+.wall-right {
+    transform: translate(-50%, -50%) rotateY(-90deg) translateZ(calc(var(--room-size) / -2));
+}
+
+.floor {
+    border: none;
+    background: repeating-linear-gradient(90deg, #f0f0f0, #f0f0f0 10%, #e6e6e6 10%, #e6e6e6 12%);
+    transform: translate(-50%, -50%) rotateX(90deg) translateZ(calc(var(--room-size) / -2));
+    border-radius: 0;
+}
+
+.wall-title {
+    font-size: clamp(2.5rem, 8vw, 4rem);
+    letter-spacing: 2px;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+/* =========================================================
+    5. DOORS & PROGRESSION
+    ========================================================= */
+.door-frame {
+    width: var(--door-w);
+    height: var(--door-h);
+    border: 4px solid #2a2a2a;
+    border-bottom: none;
+    border-radius: 4px 4px 0 0;
+    position: relative;
+    transform-style: preserve-3d;
+    background: #222;
+}
+
+.room-door {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: #fff;
+    transform-origin: left;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), background-color 0.3s ease, filter 0.3s;
+    cursor: pointer;
+}
+
+.room-door::after {
+    content: '';
+    position: absolute;
+    right: 10%;
+    top: 50%;
+    width: 14px;
+    height: 14px;
+    background: #2a2a2a;
+    border-radius: 50%;
+}
+
+.room-door h2 {
+    font-size: clamp(1.2rem, 5vw, 2.2rem);
+    pointer-events: none;
+    text-align: center;
+}
+
+.status-icon {
+    font-family: 'Courier Prime', monospace;
+    font-size: clamp(0.7rem, 2vw, 1rem);
+    margin-top: 10px;
+    padding: 4px 8px;
+    border: 2px dashed #2a2a2a;
+    pointer-events: none;
+    font-weight: bold;
+}
+
+/* Locking System */
+.door-frame.locked .room-door {
+    background: repeating-linear-gradient(45deg, #ccc, #ccc 10px, #bbb 10px, #bbb 20px);
+    filter: grayscale(1);
+}
+
+.door-frame.locked .status-icon {
+    color: #c0392b;
+    border-color: #c0392b;
+}
+
+.door-frame.unlocked .room-door {
+    background: #fff;
+}
+
+.door-frame.unlocked .status-icon {
+    color: #f39c12;
+    border-color: #f39c12;
+}
+
+.door-frame.solved .status-icon {
+    color: #27ae60;
+    border-color: #27ae60;
+}
+
+@media (hover: hover) {
+    .door-frame.unlocked.interactable:hover .room-door {
+        background-color: #e3f2fd;
+    }
+}
+
+.room-door.open {
+    transform: rotateY(-105deg);
+}
+
+/* =========================================================
+    6. PUZZLE & INVENTORY MODALS
+    ========================================================= */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(42, 42, 42, 0.9);
+    z-index: 200;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+.modal-overlay.active {
+    opacity: 1;
+}
+
+.modal-content,
+.puzzle-content {
+    background: #f4f4f2;
+    max-width: 750px;
+    width: 92%;
+    max-height: 85vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 50px 40px;
+    position: relative;
+    font-family: 'Courier Prime', monospace;
+    transform: translateY(50px) scale(0.9);
+    transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+    display: none;
+    border: 4px solid #2a2a2a;
+    border-radius: 2px 255px 3px 25px / 255px 5px 225px 3px;
+}
+
+@media (max-width: 768px) {
+
+    .modal-content,
+    .puzzle-content {
+        padding: 40px 20px 20px 20px;
+    }
+}
+
+.modal-overlay.active .modal-content,
+.modal-overlay.active .puzzle-content {
+    transform: translateY(0) scale(1);
+}
+
+.modal-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.modal-content::-webkit-scrollbar-track {
+    background: transparent;
+    border-left: 2px dashed #ccc;
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+    background: #2a2a2a;
+    border-radius: 4px;
+}
+
+.modal-content h2 {
+    font-family: 'Caveat', cursive;
+    font-size: clamp(2.5rem, 8vw, 4rem);
+    border-bottom: 4px solid #2a2a2a;
+    margin-bottom: 20px;
+    padding-top: 10px;
+    line-height: 1.1;
+}
+
+.modal-content h3 {
+    font-size: clamp(1.2rem, 4vw, 1.5rem);
+    margin: 25px 0 10px 0;
+    color: #111;
+    text-decoration: underline;
+}
+
+.modal-content p,
+.modal-content li {
+    line-height: 1.6;
+    margin-bottom: 15px;
+    font-size: clamp(0.95rem, 3vw, 1.1rem);
+    color: #333;
+}
+
+.modal-content ul {
+    padding-left: 20px;
+    margin-bottom: 15px;
+}
+
+/* Puzzle Terminal UI */
+.puzzle-content {
+    max-width: 500px;
+    text-align: center;
+    background: #111;
+    color: #3498db;
+    border: 4px solid #222;
+    border-radius: 8px;
+}
+
+.puzzle-content h2 {
+    font-family: 'Courier Prime', monospace;
+    font-size: clamp(1.2rem, 5vw, 1.5rem);
+    border-bottom: 1px dashed #3498db;
+    padding-bottom: 10px;
+    color: #3498db;
+    margin-bottom: 20px;
+    border-top: none;
+}
+
+.puzzle-content p {
+    color: #eee;
+    font-size: clamp(1rem, 4vw, 1.2rem);
+    margin-bottom: 30px;
+    line-height: 1.6;
+}
+
+.puzzle-content code {
+    background: #222;
+    padding: 4px 8px;
+    border-radius: 4px;
+    color: #f1c40f;
+    border: 1px solid #444;
+    word-wrap: break-word;
+}
+
+.puzzle-input {
+    background: transparent;
+    border: 2px solid #3498db;
+    color: #3498db;
+    font-family: 'Courier Prime', monospace;
+    font-size: 16px;
+    /* 16px STRICT to stop iOS Safari zoom */
+    padding: 12px;
+    width: 100%;
+    max-width: 300px;
+    text-align: center;
+    outline: none;
+    text-transform: lowercase;
+    margin-bottom: 20px;
+    border-radius: 4px;
+}
+
+.puzzle-input:focus {
+    background: rgba(52, 152, 219, 0.1);
+}
+
+.puzzle-input.error {
+    border-color: #e74c3c;
+    color: #e74c3c;
+}
+
+.btn-submit {
+    background: #3498db;
+    color: #111;
+    border: none;
+    font-family: 'Courier Prime', monospace;
+    font-size: 1.1rem;
+    font-weight: bold;
+    padding: 12px 30px;
+    margin-top: 10px;
+    transition: 0.2s;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-submit:active {
+    background: #2980b9;
+    transform: scale(0.95);
+}
+
+.close-btn,
+.cancel-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    font-family: 'Courier Prime', monospace;
+    font-weight: bold;
+    font-size: 1rem;
+    background: #fff;
+    border: 2px solid #2a2a2a;
+    color: #111;
+    padding: 6px 12px;
+    transition: all 0.2s ease;
+    z-index: 10;
+    cursor: pointer;
+}
+
+.close-btn:active,
+.cancel-btn:active {
+    background: #2a2a2a;
+    color: #fff;
+}
+
+/* =========================================================
+    7. CELEBRATION POPUP
+    ========================================================= */
+#party-popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.5);
+    background: #fff;
+    border: 6px solid #2a2a2a;
+    border-radius: 10px;
+    padding: 40px 20px;
+    text-align: center;
+    z-index: 500;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 20px 20px 0px rgba(0, 0, 0, 0.1);
+    width: 90%;
+    max-width: 500px;
+}
+
+#party-popup.show {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+    pointer-events: auto;
+}
+
+#party-popup h2 {
+    font-family: 'Caveat', cursive;
+    font-size: clamp(3rem, 10vw, 4.5rem);
+    color: #e74c3c;
+    margin-bottom: 15px;
+    line-height: 1;
+}
+
+#party-popup p {
+    font-family: 'Courier Prime', monospace;
+    font-size: clamp(1rem, 4vw, 1.2rem);
+    font-weight: bold;
+}
