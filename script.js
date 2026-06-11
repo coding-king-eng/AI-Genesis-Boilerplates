@@ -40,7 +40,7 @@ __________.addEventListener('DOMContentLoaded', () => {         //HINT : HTML Do
             if (p.y < 0) p.y = canvas.height; if (p.y > canvas.height) p.y = 0;
             ctx.beginPath(); ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2); ctx.fill();
         });
-        requestAnimationFrame();        //HINT : Call animateParticles function
+        _____________(animateParticles);        //HINT : Call requestAnimationFrame function
     }
     ___________;                        //HINT : Call animateParticles function
 
