@@ -1,17 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
-<______>               <!--  HINT : Main tag to hold important info  -->
-    <_______ charset="UTF-8" />              <!--  HINT : SEO Improvement Tags  -->
-    <_______ name="viewport" content="width=device-width, initial-scale=1.0" />              <!--  HINT : SEO Improvement Tags  -->
-    <______>Divya Goyal | Full Stack Developer Game</______>    <!--  HINT : Tab Headinh  -->
+<head>               <!--  HINT : Main tag to hold important info  -->
+    <meta charset="UTF-8" />              <!--  HINT : SEO Improvement Tags  -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />              <!--  HINT : SEO Improvement Tags  -->
+    <title>Divya Goyal | Full Stack Developer Game</title>    <!--  HINT : Tab Headinh  -->
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
 
+    <link rel="stylesheet" href="style.css">
 
-</______>
-<________>              <!--  HINT : This tag contains the main Webpage Content  -->
+</head>
+<body>              <!--  HINT : This tag contains the main Webpage Content  -->
 
     <div id="game-cursor"></div>
     <div id="flash"></div>
@@ -19,16 +20,16 @@
     <canvas id="confetti-canvas"></canvas>
 
     <!-- HUD -->
-    <______ id="game-hud">               <!--  HINT : Sectioning tag for containers  -->
-        <div class="hud-box">ARCHIVES UNLOCKED: <_____ id="score">0</_____>/3</div>               <!--  HINT : Sectioning tag (horizontal alignment) for containers  -->
+    <div id="game-hud">               <!--  HINT : Sectioning tag for containers  -->
+        <div class="hud-box">ARCHIVES UNLOCKED: <span id="score">0</span>/3</div>               <!--  HINT : Sectioning tag (horizontal alignment) for containers  -->
         <div class="hud-box blink" id="mission-text">MISSION: UNLOCK DOOR 1</div>
-    </______>
+    </div>
 
     <!-- START SCREEN -->
     <div id="front-gate">
-        <______>Divya Goyal</______>               <!--  HINT : Biggest Heading  -->
+        <h1>Divya Goyal</h1>               <!--  HINT : Biggest Heading  -->
         <p>Full Stack Web Developer Portfolio<br>Solve the logic puzzles to unlock the archives.</p>
-        <______ class="btn-start interactable" id="btn-enter">START GAME</______>               <!--  HINT : Clickable Element  -->
+        <button class="btn-start interactable" id="btn-enter">START GAME</button>               <!--  HINT : Clickable Element  -->
     </div>
 
     <!-- 3D ROOM -->
@@ -37,22 +38,22 @@
             <div class="wall floor"></div>
 
             <!-- Left Wall (Door 1 - Unlocked initially) -->
-            <______ class="wall wall-left">               <!--  HINT : Sectioning tag for containers  -->
-                <______ class="wall-title">Archive 01</_______>               <!--  HINT : Sub-Main heading Tag  -->
+            <div class="wall wall-left">               <!--  HINT : Sectioning tag for containers  -->
+                <h2 class="wall-title">Archive 01</h2>               <!--  HINT : Sub-Main heading Tag  -->
                 <div class="door-frame unlocked interactable" data-id="1" data-target="content-about">
                     <div class="room-door">
-                        <_____>About Me</____>               <!--  HINT : Sub-Main heading Tag  -->
+                        <h2>About Me</h2>               <!--  HINT : Sub-Main heading Tag  -->
                         <div class="status-icon">[ UNLOCKED ]</div>
                     </div>
                 </div>
-            </______>
+            </div>
 
             <!-- Back Wall (Door 2 - Locked) -->
             <div class="wall wall-back">
                 <h2 class="wall-title">Archive 02</h2>
                 <div class="door-frame locked interactable" data-id="2" data-target="content-projects">
                     <div class="room-door">
-                        <______>Projects</______>               <!--  HINT : Sub-Main heading Tag  -->
+                        <h2>Projects</h2>               <!--  HINT : Sub-Main heading Tag  -->
                         <div class="status-icon">[ LOCKED ]</div>
                     </div>
                 </div>
@@ -60,10 +61,10 @@
 
             <!-- Right Wall (Door 3 - Locked) -->
             <div class="wall wall-right">
-                <______ class="wall-title">Archive 03</_____>               <!--  HINT : Sub-Main heading Tag  -->
+                <h2 class="wall-title">Archive 03</h2>               <!--  HINT : Sub-Main heading Tag  -->
                 <div class="door-frame locked interactable" data-id="3" data-target="content-contact">
                     <div class="room-door">
-                        <_____>Contact</_____>               <!--  HINT : Sub-Main heading Tag  -->
+                        <h2>Contact</h2>               <!--  HINT : Sub-Main heading Tag  -->
                         <div class="status-icon">[ LOCKED ]</div>
                     </div>
                 </div>
@@ -76,11 +77,11 @@
         
         <!-- PUZZLE TERMINAL -->
         <div class="puzzle-content" id="puzzle-modal">
-            <________ class="cancel-btn interactable">&times; ABORT</______>               <!--  HINT : Clickable Element  -->
+            <button class="cancel-btn interactable">&times; ABORT</button>               <!--  HINT : Clickable Element  -->
             <h2>SECURITY OVERRIDE</h2>
             <!-- Using innerHTML in JS to render the question so HTML tags like <br> and <code> work perfectly -->
             <p id="puzzle-question">Question goes here...</p>
-            <_______ type="text" class="puzzle-input interactable" id="puzzle-input" placeholder="enter answer..." autocomplete="off">               <!--  HINT : Element to take values from user  -->
+            <input type="text" class="puzzle-input interactable" id="puzzle-input" placeholder="enter answer..." autocomplete="off">               <!--  HINT : Element to take values from user  -->
             <br>
             <button class="btn-submit interactable" id="btn-submit-puzzle">DECRYPT</button>
         </div>
@@ -91,29 +92,29 @@
             <h2>The Developer</h2>
             <p>Welcome. I am <strong>Divya Goyal</strong>, a passionate Full Stack Developer who builds robust, scalable web applications from the database all the way to the DOM.</p>
             <h3>Core Technical Arsenal</h3>
-            <________>               <!--  HINT : Element that displays items in queue  -->
+            <ul>               <!--  HINT : Element that displays items in queue  -->
                 <li><strong>Frontend:</strong> HTML5, CSS3, JavaScript (ES6+), React.js, Tailwind CSS.</li>
                 <li><strong>Backend:</strong> Node.js, Express.js, RESTful APIs.</li>
                 <li><strong>Database & Tools:</strong> MongoDB, PostgreSQL, Git/GitHub.</li>
-            </_________>
+            </ul>
         </div>
 
         <!-- CONTENT 2: PROJECTS -->
-        <_________ class="modal-content" id="content-projects">               <!--  HINT : Sectioning tag for containers  -->
+        <div class="modal-content" id="content-projects">               <!--  HINT : Sectioning tag for containers  -->
             <button class="close-btn interactable">&times; CLOSE TAB</button>
             <h2>Project Gallery</h2>
             <h3>Level 1: E-Commerce Platform</h3>
             <p>Engineered a full-featured online shopping platform using the MERN stack (MongoDB, Express, React, Node.js). Implemented secure user authentication, shopping cart functionality, and integrated third-party payment gateways.</p>
             
             <h3>Level 2: Real-time Chat Application</h3>
-            <_____>Built a responsive chat interface connecting multiple users instantly. Leveraged Socket.io for low-latency, real-time bidirectional event-based communication alongside a reliable Node.js backend.</_____>               <!--  HINT : Content is added in this Tag  -->
-        </__________>
+            <p>Built a responsive chat interface connecting multiple users instantly. Leveraged Socket.io for low-latency, real-time bidirectional event-based communication alongside a reliable Node.js backend.</p>               <!--  HINT : Content is added in this Tag  -->
+        </div>
 
         <!-- CONTENT 3: CONTACT -->
         <div class="modal-content" id="content-contact">
             <button class="close-btn interactable">&times; CLOSE TAB</button>
             <h2>Communications Hub</h2>
-            <__________>I am actively open to collaborations, full-time engineering roles, and exciting freelance opportunities within innovative tech teams.</__________>              <!--  HINT : Content is added in this Tag  -->
+            <p>I am actively open to collaborations, full-time engineering roles, and exciting freelance opportunities within innovative tech teams.</p>              <!--  HINT : Content is added in this Tag  -->
             <br>
             <p><strong>[ Email ]:</strong> hello@divyagoyal.dev</p>
             <p><strong>[ GitHub ]:</strong> github.com/divyagoyal</p>
@@ -123,10 +124,12 @@
     </div>
 
     <!-- PARTY POPUP -->
-    <_____ id="party-popup">               <!--  HINT : Sectioning tag for containers  -->
+    <div id="party-popup">               <!--  HINT : Sectioning tag for containers  -->
         <h2>MISSION ACCOMPLISHED!</h2>
         <p>You have unlocked the full portfolio.</p>
-    </_____>.  
+    </div>.  
 
-</________>
+     <script src="script.js"></script>       
+            
+</body>
 </html>
